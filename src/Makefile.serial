@@ -1,0 +1,41 @@
+#  File:	 Makefile
+#  Author:	 Johan Bevemyr
+#  Created:	 Fri Oct 18 09:59:34 1996
+#  Copyright:    (c)Johan Bevemyr
+#
+#  Modified:     5 Nov 1998 by tobbe@cslab.ericsson.se
+ 
+
+CC = gcc
+# roland
+LINK.c = gcc
+
+WARNING_OPTIONS =
+LANGUAGE_OPTIONS = 
+COMPILER_OPTIONS = -g -DDEBUG
+
+CFLAGS   = $(WARNING_OPTIONS) $(LANGUAGE_OPTIONS) $(COMPILER_OPTIONS)
+
+######################################################################
+
+HEADER_FILES = eppp_serial.h
+SOURCE_FILES = eppp_serial.c
+
+OBJECT_FILES = $(SOURCE_FILES:.c=.o)
+
+######################################################################
+
+eppp_serial : $(OBJECT_FILES)
+	$(LINK.c) -o $@ $(LDFLAGS) $(OBJECT_FILES) $(LDLIBS)
+
+clean : 
+	/bin/rm -f $(OBJECT_FILES)
+
+# roland
+eppp_serial.o: eppp_serial.c eppp_serial.h
+
+realclean: clean
+	/bin/rm -f eppp_serial
+
+$(OBJECT_FILES): $(HEADER_FILE)
+
