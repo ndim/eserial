@@ -40,15 +40,9 @@
  *        Sends break.
  *   
  *   usage: serial [-cbreak] [-erlang] [-speed <bit rate>] [-tty <dev>]
- *          bit rate is one of 
- *                  50      75      110
- *                  134     150     200
- *                  300     600     1200
- *                  1800    2400    4800
- *                  9600    19200   38400
- *                  57600   76800   115200
- *                  153600  230400  307200
- *                  460800
+ *
+ *          Valid bit rates are listed by "-speed help" or can be gathered
+ *          from the bitrate_table array in eppp_serial.c.
  */
 
 #include <stdio.h>
@@ -66,8 +60,7 @@
 
 int errno;
 
-#define MAXSPEED 23
-bit_rate bitrate_table[MAXSPEED] = {
+bit_rate bitrate_table[] = {
   {0      , B0	   },
   {50     , B50	   },
   {75     , B75	   },
@@ -82,45 +75,47 @@ bit_rate bitrate_table[MAXSPEED] = {
   {2400   , B2400  },
   {4800   , B4800  },
   {9600   , B9600  },
-  {19200  , B19200 },	
-  {38400  , B38400 },	
-  {57600  , B57600 },	
-  {76800  , B76800 },	
-  {115200 , B115200 }, 	
-#ifndef __FreeBSD__		/* roland */
-  {153600 , B153600 }, 	
+  {19200  , B19200 },
+  {38400  , B38400 },
+  {57600  , B57600 },
+#ifdef B76800
+  {76800  , B76800 },
 #endif
-  {230400 , B230400 }, 	
-#ifndef __FreeBSD__		/* roland */
-  {307200 , B307200 }, 	
-  {460800 , B460800 } 	
+  {115200 , B115200 },
+#ifdef B153600
+  {153600 , B153600 },
 #endif
+  {230400 , B230400 },
+#ifdef B307200
+  {307200 , B307200 },
+#endif
+#ifdef B460800
+  {460800 , B460800 },
+#endif
+  {-1     , B0      }
 };
 
 /**********************************************************************
  * Name: get_speed
  *
  * Desc: Returns the speed_t value associated with a given bit_rate
- *       according to the bitrate_table. B0 is returned if no matching entry 
+ *       according to the bitrate_table. B0 is returned if no matching entry
  *       is found.
  */
 
 speed_t get_speed(int speed)
 {
   int i;
-  
-  for(i=0 ; i < MAXSPEED ; i++)
+
+  for(i=0 ; bitrate_table[i].rate != -1; i++)
     {
       if (speed == bitrate_table[i].rate)
 	break;
     }
-  
-  if (i == MAXSPEED)
-    return B0;
-  else
-    return bitrate_table[i].speed;
+
+  return bitrate_table[i].speed;
 }
-  
+
 /**********************************************************************
  * Name: set_raw_tty_mode
  *
@@ -691,12 +686,19 @@ main(int argc, char *argv[])
 
  error_usage:
   fprintf(stderr,"usage: %s [-cbreak] [-erlang] [-speed <bit rate>] [-tty <dev>]\n",argv[0]);
-  fprintf(stderr,"\tbit rate is one of \n\t\t50\t75\t110\n\t\t");
-  fprintf(stderr,"134\t150\t200\n\t\t300\t");
-  fprintf(stderr,"600\t1200\n\t\t1800\t2400\t4800\n\t\t");
-  fprintf(stderr,"9600\t19200\t38400\n\t\t57600\t");
-  fprintf(stderr,"76800\t115200\n\t\t153600\t230400\t");
-  fprintf(stderr,"307200\n\t\t460800\n");
-
+  if (1) {
+    int i;
+    fprintf(stderr,"\tbit rate is one of");
+    for (i=0; bitrate_table[i].rate != -1; i++) {
+      if (bitrate_table[i].rate == 0) {
+	continue;
+      }
+      if (((i-1)%5) == 0) {
+	fprintf(stderr, "\n\t");
+      }
+      fprintf(stderr, "\t%d", bitrate_table[i].rate);
+    }
+    fprintf(stderr, "\n");
+  }
   exit(0);
 }
