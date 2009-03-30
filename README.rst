@@ -33,7 +33,10 @@ code audit, API cleanup/redesign, and probably more.
 Related Projects
 ----------------
 
-eppp_: source of the original code
-erlusb_: something similar for USB devices
+    eppp_
+        source of the original code
+
+    erlusb_
+        something similar for USB devices
 
 .. _erlusb: http://ndim.github.com/erlusb/
