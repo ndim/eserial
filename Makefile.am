@@ -1,6 +1,6 @@
-epppbindir          = $(ERLANG_INSTALL_LIB_DIR_eppp)/bin
-epppebindir         = $(ERLANG_INSTALL_LIB_DIR_eppp)/ebin
-epppsrcdir          = $(ERLANG_INSTALL_LIB_DIR_eppp)/src
+epppbindir          = $(ERLANG_INSTALL_LIB_DIR_eserial)/bin
+epppebindir         = $(ERLANG_INSTALL_LIB_DIR_eserial)/ebin
+epppsrcdir          = $(ERLANG_INSTALL_LIB_DIR_eserial)/src
 
 CLEANFILES          =
 EXTRA_DIST          =
