@@ -48,6 +48,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <termios.h>
 #include <fcntl.h>
 #include <errno.h>
