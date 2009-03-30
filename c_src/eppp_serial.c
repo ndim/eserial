@@ -350,7 +350,7 @@ void write_to_tty(int ttyfd, int fillfd, int totalsize, int buffsize,
 
 /**********************************************************************/
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int            ttyfd = -1;           /* terminal file descriptor */
   int            stdinfd;              /* user file descriptor     */
