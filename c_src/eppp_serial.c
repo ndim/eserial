@@ -97,9 +97,30 @@ bit_rate bitrate_table[] = {
   {-1     , B0      }
 };
 
-
 int read_at_least(int fd, char buf[], int nr);
 
+/**********************************************************************
+ * Name: checked_write
+ *
+ * Desc: Like write(2) but aborts program in case of any write error.
+ */
+
+void checked_write(int fd, const void *buf, size_t count)
+{
+  const ssize_t written = write(fd, buf, count);
+  if (written < 0) {
+    perror("write");
+    exit(1);
+  } else {
+    const size_t uwritten = (size_t) written;
+    if (uwritten == count) {
+      return;
+    } else {
+      fprintf(stderr, "Incomplete write(2): %d of %d bytes\n", written, count);
+      exit(1);
+    }
+  }
+}
 
 /**********************************************************************
  * Name: get_speed
@@ -259,10 +280,10 @@ void tbh_write(int fd, char buf[], int buffsize)
 
   /* First, write two byte header */
   set_tbh_size(header_buf, buffsize);
-  write(fd,header_buf,TBHSIZE);
+  checked_write(fd,header_buf,TBHSIZE);
 
   /* Second, write original buffer */
-  write(fd,buf,buffsize);
+  checked_write(fd,buf,buffsize);
 
   return;
 }
@@ -333,7 +354,7 @@ int read_at_least(int fd, char buf[], int nr)
 void write_to_tty(int ttyfd, int fillfd, int totalsize, int buffsize,
 		  char buf[], int buffmaxsize)
 {
-  write(ttyfd,buf,buffsize);
+  checked_write(ttyfd,buf,buffsize);
   totalsize -= buffsize;
 
   while(totalsize > 0)
@@ -342,7 +363,7 @@ void write_to_tty(int ttyfd, int fillfd, int totalsize, int buffsize,
 
       readmax = Min(totalsize,buffmaxsize);
       buffsize = read(fillfd,buf,readmax);
-      write(ttyfd,buf,buffsize);
+      checked_write(ttyfd,buf,buffsize);
       totalsize -= buffsize;
     }
 
@@ -507,7 +528,7 @@ int main(int argc, char *argv[])
 	    if (erlang)
 	      tbh_write(stdoutfd,buf,nr_read);
 	    else
-	      write(stdoutfd,buf,nr_read);
+	      checked_write(stdoutfd,buf,nr_read);
 	      
 	  }
 	
@@ -546,7 +567,7 @@ int main(int argc, char *argv[])
 		      }
 		  }
 		if (TtyOpen(ttyfd))
-		  write(ttyfd,buf,nr_read);
+		  checked_write(ttyfd,buf,nr_read);
 	      }
 	    /********************
 	     * Erlang mode
@@ -674,7 +695,7 @@ int main(int argc, char *argv[])
 	    else
 	      {
 		nr_read = read(stdinfd,buf,MAXLENGTH);
-		write(ttyfd,buf,nr_read);
+		checked_write(ttyfd,buf,nr_read);
 	      }
 
 	    if (nr_read <= 0)
