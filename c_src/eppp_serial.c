@@ -169,7 +169,7 @@ void set_raw_tty_mode(int fd)
 
   ttymodes.c_oflag &= ~OPOST;      /* disable output processing */
 
-  /* roland /
+  /* roland */
   ttymodes.c_cflag |= CLOCAL;
 
 
