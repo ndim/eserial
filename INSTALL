@@ -1,0 +1,26 @@
+How to build and install eppp
+=============================
+
+As a general rule, you can use the common
+
+   $ ./configure
+   $ make
+   # make install
+
+sequence.
+
+If you have modified configure.ac or Makefile.am or do not have the
+configure and Makefile.in files, you probably should run this first:
+
+   $ autoreconf -vis .
+
+If you want to give some compiler parameters to erlc, you can just call
+make with ERLCFLAGS set, e.g.
+
+   $ make ERLCFLAGS="-DCURRENT_DIR_HACK=true"
+          # to let eppp_serial.beam look for eppp_serial in the current directory
+
+TODO: Currently, only eppp_serial works. The eppp code needs some work.
+
+For backwards compatibility, src/Makefile{,.serial} are still shipped, but
+are completely unrelated to configure or Makefile.am.

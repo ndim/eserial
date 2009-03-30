@@ -31,6 +31,9 @@
 -define(DEFAULT_LOG_LEVEL, 2).
 
 
+-define(CURRENT_DIR_HACK, false).
+
+
 start() ->
     start([]).
 
@@ -78,12 +81,13 @@ init(Pid) ->
 %% $(EPPP_DIR)/ebin directory and the eppp_serial 
 %% executable in $(EPPP_DIR)/bin.
 
+bin_dir() when ?CURRENT_DIR_HACK =:= true ->
+    ".";  %% TEMPORARY HACK FOR DEBUGGING PURPOSES !!!!!!
 bin_dir() ->
     {file,ObjFile} = code:is_loaded(?MODULE),
     Dir = filename:dirname(ObjFile),
-    Dir ++ "/../bin",
-    ".".  %% TEMPORARY HACK FOR DEBUGGING PURPOSES !!!!!!
-
+    Dir2 = filename:dirname(Dir),
+    Dir3 = filename:join(Dir2, bin).
 
 loop(Pid,Port,LogLevel) ->
     receive
