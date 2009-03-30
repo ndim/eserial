@@ -14,8 +14,8 @@ typedef enum {
   TRUE = 1
 } boolean;
 
-#define NULLFDS   ((struct fd_set *) 0)
-#define NULLTV    ((struct timeval *) 0)
+#define NULLFDS   ((fd_set *) NULL)
+#define NULLTV    ((struct timeval *) NULL)
 #define MAXLENGTH 1024
 
 typedef struct {
