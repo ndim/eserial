@@ -443,7 +443,7 @@ int main(int argc, char *argv[])
 
   if (cbreak)
     {
-      sigset_t sig, savesig;
+      /* unused: sigset_t sig, savesig; */
 
       /* Use non-cononical mode for input */
       set_raw_tty_mode(stdinfd);
