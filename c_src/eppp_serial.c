@@ -96,6 +96,10 @@ bit_rate bitrate_table[] = {
   {-1     , B0      }
 };
 
+
+int read_at_least(int fd, char buf[], int nr);
+
+
 /**********************************************************************
  * Name: get_speed
  *
